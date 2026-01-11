@@ -3,7 +3,7 @@
 # ============================================================================
 
 # Generated data files (large, regenerate with DataGen.ipynb)
-benchmark/data/*.npz
+# benchmark/data/*.npz 
 
 # Generated results (regenerate with Experiments.ipynb and Analysis.ipynb)
 benchmark/results/*.csv
