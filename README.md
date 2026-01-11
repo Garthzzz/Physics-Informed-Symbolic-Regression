@@ -1,4 +1,4 @@
-# Physics-SR Framework v3.0
+# Physics Informed SR Framework
 
 ## Three-Stage Physics-Informed Symbolic Regression Framework
 
