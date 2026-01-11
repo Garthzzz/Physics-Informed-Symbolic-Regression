@@ -6,10 +6,10 @@
 # benchmark/data/*.npz 
 
 # Generated results (regenerate with Experiments.ipynb and Analysis.ipynb)
-benchmark/results/*.csv
-benchmark/results/*.pkl
-benchmark/results/figures/*.png
-benchmark/results/tables/*.tex
+#benchmark/results/*.csv
+#benchmark/results/*.pkl
+#benchmark/results/figures/*.png
+#benchmark/results/tables/*.tex
 
 # Keep directory structure
 !benchmark/data/.gitkeep
