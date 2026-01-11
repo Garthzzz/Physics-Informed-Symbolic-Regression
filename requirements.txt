@@ -1,0 +1,44 @@
+# Physics-SR Framework v3.0 - Python Dependencies
+# ================================================
+#
+# NOTE FOR GOOGLE COLAB USERS:
+# ----------------------------
+# Colab already has most packages pre-installed (numpy, pandas, scipy, 
+# sklearn, matplotlib, seaborn, tqdm, etc.)
+#
+# You only need to install these packages that are NOT in Colab:
+#   !pip install pysr
+#
+# Then initialize PySR's Julia backend:
+#   import pysr; pysr.install()
+#
+# For local installation:
+#   pip install -r requirements.txt
+#
+# ================================================
+
+# Core scientific computing (Colab has these)
+numpy
+pandas
+scipy
+
+# Machine learning (Colab has this)
+scikit-learn
+
+# Symbolic computation (Colab has this)
+sympy
+
+# Symbolic regression (MUST INSTALL - not in Colab)
+pysr
+
+# Visualization (Colab has these)
+matplotlib
+seaborn
+
+# Utilities (Colab has these)
+tqdm
+joblib
+
+# Jupyter (Colab has these, only needed for local)
+ipykernel
+notebook

@@ -1,0 +1,79 @@
+# ============================================================================
+# Physics-SR Framework v3.0 - Git Ignore Configuration
+# ============================================================================
+
+# Generated data files (large, regenerate with DataGen.ipynb)
+benchmark/data/*.npz
+
+# Generated results (regenerate with Experiments.ipynb and Analysis.ipynb)
+benchmark/results/*.csv
+benchmark/results/*.pkl
+benchmark/results/figures/*.png
+benchmark/results/tables/*.tex
+
+# Keep directory structure
+!benchmark/data/.gitkeep
+!benchmark/results/.gitkeep
+!benchmark/results/figures/.gitkeep
+!benchmark/results/tables/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+
+# PySR / Julia
+.julia/
+*.jl.cov
+*.jl.mem
+
+# Logs
+*.log
+experiment_log.txt
+
+# Temporary files
+*.tmp
+*.temp
