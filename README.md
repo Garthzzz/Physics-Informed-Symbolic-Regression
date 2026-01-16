@@ -1,6 +1,6 @@
-# Physics Informed SR Framework
+# Physics-SR Framework
 
-## Three-Stage Physics-Informed Symbolic Regression Framework
+## Three-Stage Physics-Informed Symbolic Regression Framework v4.7
 
 **Author:** Zhengze Zhang  
 **Affiliation:** Department of Statistics, Columbia University  
@@ -11,21 +11,70 @@
 
 ## Overview
 
-Physics-SR is a comprehensive framework for discovering interpretable mathematical equations from scientific data. It combines physics-informed preprocessing with state-of-the-art symbolic regression methods to achieve superior variable selection and equation recovery compared to baseline approaches.
+Physics-SR is a comprehensive framework for discovering interpretable mathematical equations from scientific data. It combines physics-informed preprocessing with state-of-the-art symbolic regression methods, featuring a novel **5-layer augmented feature library** and **dual-track model selection** to achieve superior equation recovery compared to baseline approaches.
 
-### Key Features
+### Key Innovations (v4.7)
 
-- **Stage 1: Variable Selection** - Buckingham Pi dimensional analysis, PAN+SR screening, symmetry detection
-- **Stage 2: Structure Discovery** - PySR genetic programming, E-WSINDy sparse regression, Adaptive Lasso
-- **Stage 3: Validation & UQ** - Cross-validation model selection, physics verification, bootstrap uncertainty quantification
+- **5-Layer Augmented Library**: Physics-guided term generation with Layer 0 inverse terms from power-law symmetry detection
+- **Dual-Track Selection**: Parallel PySR coefficient refinement and E-WSINDy sparse regression with adaptive selection
+- **Three-Layer Uncertainty Quantification**: Structural, parametric, and predictive UQ via bootstrap
+- **Intercept Fix**: Critical correction for non-zero mean data preventing catastrophic R² failures
 
-### Performance Highlights
+### Performance Highlights (AI Feynman Benchmark)
 
-| Metric | Physics-SR | PySR-Only | LASSO+PySR |
-|--------|------------|-----------|------------|
-| Variable Selection F1 | **0.90** | 0.60 | 0.75 |
-| Test R² | **0.95** | 0.85 | 0.90 |
-| Noise Robustness | **High** | Low | Medium |
+| Equation | Physics-SR | PySR-Only | LASSO+PySR | Improvement |
+|----------|------------|-----------|------------|-------------|
+| Coulomb (I.12.2) | **0.88** | 0.44 | 0.33 | +102% |
+| Barometric (I.40.1) | **0.85** | 0.82 | 0.80 | +4% |
+
+**Key Result:** Physics-SR achieves 102% improvement on inverse-square relationships by explicitly generating inverse terms (1/r, 1/r²) through Layer 0 power-law detection.
+
+---
+
+## Framework Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    STAGE 1: Variable Selection & Preprocessing               │
+│                              (10-30 seconds)                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  1.1 Buckingham Pi Dimensional Analysis                                     │
+│  1.2 PAN+SR Nonlinear Variable Screening (RF Permutation Importance)        │
+│  1.3 Power-Law Symmetry Detection (Log-Log Regression) → Layer 0 trigger    │
+│  1.4 Adaptive Interaction Discovery (Enumeration / TreeSHAP)                │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│              STAGE 2: Structure-Guided Discovery (v4.7 Dual-Track)          │
+│                              (60-120 seconds)                                │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  2.1 PySR Structure Exploration (Pareto front extraction)                   │
+│  2.2 Structure Parsing (SymPy term extraction)                              │
+│  2.3 5-Layer Augmented Library Construction:                                │
+│      • Layer 0 [PowLaw]: Inverse terms from symmetry analysis (1/r, 1/r²)   │
+│      • Layer 1 [PySR]: Exact terms from PySR Pareto front                   │
+│      • Layer 2 [Var]: Variable substitution variants                        │
+│      • Layer 3 [Poly]: Polynomial baseline terms                            │
+│      • Layer 4 [Op]: Operator-guided simple terms                           │
+│  2.4 Dual-Track Selection:                                                  │
+│      • Track 1: PySR Coefficient Refinement (curve_fit)                     │
+│      • Track 2: E-WSINDy Sparse Selection (fit_intercept=True)              │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                      │
+                                      ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    STAGE 3: Validation & Uncertainty Quantification          │
+│                              (20-40 seconds)                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│  3.1 Model Selection (K-Fold CV + EBIC)                                     │
+│  3.2 Physics Verification (Dimensional consistency, physical bounds)        │
+│  3.3 Three-Layer Bootstrap UQ (Structural, Parametric, Predictive)          │
+│  3.4 Statistical Inference (Hypothesis testing, p-values)                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+TOTAL RUNTIME: 90-180 seconds on Google Colab Pro
+```
 
 ---
 
@@ -33,34 +82,35 @@ Physics-SR is a comprehensive framework for discovering interpretable mathematic
 
 ```
 Physics-Informed-Symbolic-Regression/
-├── algorithms/                    # Core algorithm notebooks
-│   ├── 00_Core.ipynb             # DataClasses, utilities
-│   ├── 01_BuckinghamPi.ipynb     # Dimensional analysis
-│   ├── 02_VariableScreening.ipynb # PAN+SR screening
-│   ├── 03_SymmetryAnalysis.ipynb # Power-law detection
-│   ├── 04_InteractionDiscovery.ipynb # iRF interactions
-│   ├── 05_FeatureLibrary.ipynb   # Feature expansion
-│   ├── 06_PySR.ipynb             # Genetic programming
-│   ├── 07_EWSINDy_STLSQ.ipynb    # Sparse regression
-│   ├── 08_AdaptiveLasso.ipynb    # Adaptive Lasso
-│   ├── 09_ModelSelection.ipynb   # CV + EBIC
-│   ├── 10_PhysicsVerification.ipynb # Physics checks
-│   ├── 11_UQ_Inference.ipynb     # Bootstrap UQ
-│   └── 12_Full_Pipeline.ipynb    # Complete integration
+├── algorithms/                        # Core algorithm notebooks
+│   ├── 00_Core.ipynb                 # DataClasses, utilities, constants
+│   ├── 01_BuckinghamPi.ipynb         # Dimensional analysis
+│   ├── 02_VariableScreening.ipynb    # RF permutation importance screening
+│   ├── 03_SymmetryAnalysis.ipynb     # Power-law detection → Layer 0
+│   ├── 04_InteractionDiscovery.ipynb # Pairwise interaction detection
+│   ├── 05_FeatureLibrary.ipynb       # 5-layer augmented library builder
+│   ├── 06_PySR.ipynb                 # PySR + structure parsing
+│   ├── 07_EWSINDy_STLSQ.ipynb        # E-WSINDy sparse regression
+│   ├── 08_AdaptiveLasso.ipynb        # Adaptive Lasso verification
+│   ├── 09_ModelSelection.ipynb       # CV + EBIC model selection
+│   ├── 10_PhysicsVerification.ipynb  # Physics constraint checking
+│   ├── 11_UQ_Inference.ipynb         # Bootstrap UQ + inference
+│   └── 12_Full_Pipeline.ipynb        # Complete integrated pipeline
 │
-├── benchmark/                     # Benchmark experiments
-│   ├── DataGen.ipynb             # Test data generation
-│   ├── Experiments.ipynb         # Experiment execution
-│   ├── Analysis.ipynb            # Results visualization
-│   ├── data/                     # Generated datasets
-│   └── results/                  # Experiment results
-│       ├── figures/              # Plots
-│       └── tables/               # LaTeX tables
+├── benchmark/                         # Benchmark experiments
+│   ├── DataGen.ipynb                 # AI Feynman test data generation
+│   ├── Experiments.ipynb             # Experiment execution
+│   ├── Analysis.ipynb                # Results visualization
+│   ├── data/                         # Generated datasets
+│   └── results/                      # Experiment outputs
+│       ├── figures/                  # Plots
+│       └── tables/                   # LaTeX tables
 │
-├── requirements.txt              # Python dependencies
-├── setup_colab.sh               # Colab setup script
-├── .gitignore                   # Git ignore rules
-└── README.md                    # This file
+├── Physics_SR_Framework_v4.7_Complete.md  # Full algorithm specification
+├── requirements.txt                  # Python dependencies
+├── setup_colab.sh                    # Colab setup script
+├── SETUP_GUIDE.md                    # Detailed setup instructions
+└── README.md                         # This file
 ```
 
 ---
@@ -84,35 +134,36 @@ Physics-Informed-Symbolic-Regression/
    ```
 
 3. **Run Benchmark:**
-   - Run `benchmark/DataGen.ipynb` to generate test data
-   - Run `benchmark/Experiments.ipynb` to execute experiments
-   - Run `benchmark/Analysis.ipynb` to visualize results
+   ```python
+   # 1. Generate test data
+   %run benchmark/DataGen.ipynb
+   
+   # 2. Run experiments
+   %run benchmark/Experiments.ipynb
+   
+   # 3. Analyze results
+   %run benchmark/Analysis.ipynb
+   ```
 
 ### Option 2: Local Installation
 
-1. **Clone Repository:**
-   ```bash
-   git clone https://github.com/Garthzzz/Physics-Informed-Symbolic-Regression.git
-   cd Physics-Informed-Symbolic-Regression
-   ```
+```bash
+# Clone repository
+git clone https://github.com/Garthzzz/Physics-Informed-Symbolic-Regression.git
+cd Physics-Informed-Symbolic-Regression
 
-2. **Create Virtual Environment:**
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # Linux/Mac
-   # or: venv\Scripts\activate  # Windows
-   ```
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Linux/Mac
+# or: venv\Scripts\activate  # Windows
 
-3. **Install Dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   python -c "import pysr; pysr.install()"  # Install Julia backend
-   ```
+# Install dependencies
+pip install -r requirements.txt
+python -c "import pysr; pysr.install()"  # Install Julia backend
 
-4. **Run Notebooks:**
-   ```bash
-   jupyter notebook
-   ```
+# Run notebooks
+jupyter notebook
+```
 
 ---
 
@@ -124,65 +175,122 @@ Physics-Informed-Symbolic-Regression/
 # Import the pipeline
 %run algorithms/12_Full_Pipeline.ipynb
 
-# Prepare user inputs
+# Prepare user inputs with dimensional information
 user_inputs = UserInputs(
     variable_dimensions={
-        'x1': [0, 1, 0, 0],   # Length dimension
-        'x2': [1, 0, 0, 0],   # Mass dimension
-        'x3': [0, 0, -1, 0],  # Time^-1 dimension
+        'q1': [0, 0, 1, 0],   # Charge dimension [A·s]
+        'q2': [0, 0, 1, 0],   # Charge dimension
+        'r': [0, 1, 0, 0],    # Length dimension [m]
     },
-    target_dimensions=[1, 1, -2, 0],  # Force = kg*m/s^2
-    physical_bounds={'target': {'min': 0, 'max': None}}
+    target_dimensions=[1, 1, -2, 0],  # Force [kg·m/s²]
+    physical_bounds={'target': {'min': None, 'max': None}}
 )
 
 # Run pipeline
 pipeline = PhysicsSRPipeline()
 results = pipeline.run(X, y, feature_names, user_inputs)
 
-# Get final equation
-print(f"Discovered equation: {results['final_equation']}")
+# Get discovered equation
+print(f"Equation: {results['final_equation']}")
+print(f"Test R²: {results['test_r2']:.4f}")
+print(f"Selected method: {results['selected_method']}")
 ```
 
-### Benchmark Experiments
+### Understanding the 5-Layer Library
 
 ```python
-# 1. Generate test data
-%run benchmark/DataGen.ipynb
-generator = BenchmarkDataGenerator()
-generator.generate_all_datasets()
+# Stage 1 power-law detection finds r^(-2) exponent
+# This automatically triggers Layer 0 generation:
 
-# 2. Run experiments
-%run benchmark/Experiments.ipynb
-runner = ExperimentRunner()
-results = runner.run_all_experiments()
-
-# 3. Analyze results
-%run benchmark/Analysis.ipynb
+# Layer 0 [PowLaw]: 1/r, 1/r², q1*q2/r²  ← from symmetry analysis
+# Layer 1 [PySR]:   terms from PySR Pareto front
+# Layer 2 [Var]:    variable substitution variants
+# Layer 3 [Poly]:   x1, x2, x1², x1*x2, ...
+# Layer 4 [Op]:     sin(x1), exp(x2), ...
 ```
 
 ---
 
-## Test Equations
+## Algorithm Details
 
-The benchmark includes 4 physics equations of varying complexity:
+### Stage 1: Variable Selection
 
-| Equation | Formula | Type | Difficulty |
-|----------|---------|------|------------|
-| KK2000 | $y = 1350 \cdot q_c^{2.47} \cdot N_d^{-1.79}$ | Power-law | Medium |
-| Newton | $F = G \cdot m_1 \cdot m_2 / r^2$ | Rational | Easy |
-| Ideal Gas | $P = n \cdot R \cdot T / V$ | Rational | Easy |
-| Damped Osc. | $x = A \cdot e^{-\gamma t} \cdot \cos(\omega t + \phi)$ | Nested | Hard |
+| Component | Method | Purpose |
+|-----------|--------|---------|
+| 1.1 Buckingham Pi | Null space enumeration | Reduce to dimensionless groups |
+| 1.2 Variable Screening | RF Permutation Importance | Filter irrelevant variables |
+| 1.3 Symmetry Detection | Log-log regression | Detect power-law, estimate exponents |
+| 1.4 Interaction Discovery | Enumeration / TreeSHAP | Find stable variable interactions |
+
+**Why RF instead of iRF?** iRF's Random Intersection Trees (RIT) have combinatorial complexity for path extraction. Direct pairwise enumeration is 1500x faster with 100% recall, since E-WSINDy filters false positives anyway.
+
+### Stage 2: Dual-Track Selection (v4.7)
+
+```
+                    ┌─────────────────────────────┐
+                    │  5-Layer Augmented Library  │
+                    └─────────────┬───────────────┘
+                                  │
+              ┌───────────────────┴───────────────────┐
+              ▼                                       ▼
+    ┌─────────────────────┐               ┌─────────────────────┐
+    │  Track 1: PySR      │               │  Track 2: E-WSINDy  │
+    │  Coefficient Refine │               │  Sparse Selection   │
+    │  (curve_fit)        │               │  (fit_intercept=T)  │
+    └─────────┬───────────┘               └─────────┬───────────┘
+              │                                     │
+              └───────────────┬─────────────────────┘
+                              ▼
+                    ┌─────────────────────┐
+                    │  Selection Logic:   │
+                    │  if PySR R² ≥ 0.70: │
+                    │    prefer PySR      │
+                    │  else:              │
+                    │    pick best R²     │
+                    └─────────────────────┘
+```
+
+### Stage 3: Three-Layer UQ
+
+| Layer | Type | Output |
+|-------|------|--------|
+| 1 | Structural UQ | Term inclusion probability across bootstrap |
+| 2 | Parametric UQ | Coefficient confidence intervals |
+| 3 | Predictive UQ | Prediction intervals for new data |
+
+---
+
+## Benchmark Equations
+
+The benchmark uses AI Feynman equations covering different functional forms:
+
+| Equation | Formula | Type | Challenge |
+|----------|---------|------|-----------|
+| Coulomb (I.12.2) | F = q₁q₂/(4πε₀r²) | Inverse-square | Requires Layer 0 inverse terms |
+| Cosines (I.29.16) | y = √(x₁² + x₂² - 2x₁x₂cos(θ)) | Trigonometric | Nested sqrt + cos |
+| Barometric (I.40.1) | P = P₀·exp(-mgz/kT) | Exponential | Requires exp operator |
+| DotProduct (I.11.19) | y = x₁y₁ + x₂y₂ + x₃y₃ | Polynomial | High-dimensional interaction |
+
+---
+
+## Key References
+
+- **Buckingham Pi**: Buckingham, E. (1914). On physically similar systems. *Physical Review*, 4(4), 345.
+- **SINDy**: Brunton, S. L., et al. (2016). Discovering governing equations from data. *PNAS*, 113(15), 3932-3937.
+- **Weak-SINDy**: Messenger, D. A., & Bortz, D. M. (2021). Weak SINDy for partial differential equations. *JCP*, 443, 110525.
+- **PySR**: Cranmer, M. (2023). Interpretable Machine Learning for Science with PySR and SymbolicRegression.jl. arXiv:2305.01582.
+- **AI Feynman**: Udrescu, S. M., & Tegmark, M. (2020). AI Feynman: A physics-inspired method for symbolic regression. *Science Advances*, 6(16), eaay2631.
+- **EBIC**: Chen, J., & Chen, Z. (2008). Extended Bayesian information criteria for model selection. *Biometrika*, 95(3), 759-771.
 
 ---
 
 ## Citation
 
-If you use this framework in your research, please cite:
-
 ```bibtex
 @software{zhang2026physicssr,
   author = {Zhang, Zhengze},
   title = {Physics-SR: Three-Stage Physics-Informed Symbolic Regression Framework},
+  version = {4.7},
   year = {2026},
   url = {https://github.com/Garthzzz/Physics-Informed-Symbolic-Regression}
 }
@@ -192,7 +300,7 @@ If you use this framework in your research, please cite:
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
@@ -200,7 +308,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 - Prof. Tian Zheng (Columbia University) - Advisor
 - Dr. Kara Lamb (Columbia University, LEAP Center) - Advisor
-- The PySR and SINDy communities for their foundational work
+- The PySR and SINDy communities for foundational work
 
 ---
 
@@ -208,4 +316,4 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 **Zhengze Zhang**  
 Department of Statistics, Columbia University  
-Email: zz3039@columbia.edu
+Email: zz3239@columbia.edu
