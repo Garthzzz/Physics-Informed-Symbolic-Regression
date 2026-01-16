@@ -20,14 +20,11 @@ Physics-SR is a comprehensive framework for discovering interpretable mathematic
 - **Three-Layer Uncertainty Quantification**: Structural, parametric, and predictive UQ via bootstrap
 - **Intercept Fix**: Critical correction for non-zero mean data preventing catastrophic R² failures
 
-### Performance Highlights (AI Feynman Benchmark)
+### Target Applications
 
-| Equation | Physics-SR | PySR-Only | LASSO+PySR | Improvement |
-|----------|------------|-----------|------------|-------------|
-| Coulomb (I.12.2) | **0.88** | 0.44 | 0.33 | +102% |
-| Barometric (I.40.1) | **0.85** | 0.82 | 0.80 | +4% |
-
-**Key Result:** Physics-SR achieves 102% improvement on inverse-square relationships by explicitly generating inverse terms (1/r, 1/r²) through Layer 0 power-law detection.
+- **Atmospheric Microphysics**: Discovering warm rain process equations (autoconversion, accretion)
+- **Physics Equation Recovery**: Recovering known physical laws from noisy experimental data
+- **Scientific Discovery**: Finding interpretable relationships in high-dimensional scientific datasets
 
 ---
 
